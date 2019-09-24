@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    openshift.io/display-name: "Alert Hook"
+  name: alert-hook-template
+objects:
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: ${SERVICE_NAME}
+    spec:
+      replicas: 1
+      selector:
+        name: ${SERVICE_NAME}
+      template:
+        metadata:
+          labels:
+            name: ${SERVICE_NAME}
+        spec:
+          containers:
+            - name: alert-hook
+              image: rashadansari/alert-hook:${IMAGE_TAG}
+              env:
+                - name: HTTP_ENDPOINT_HOST
+                  value: 0.0.0.0
+                - name: HTTP_ENDPOINT_PORT
+                  value: "8080"
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              readinessProbe:
+                tcpSocket:
+                  port: 8080
+                initialDelaySeconds: 5
+                periodSeconds: 10
+              livenessProbe:
+                tcpSocket:
+                  port: 8080
+                initialDelaySeconds: 15
+                periodSeconds: 20
+              resources:
+                limits:
+                  memory: ${MEMORY_SIZE}
+      triggers:
+        - type: ConfigChange
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${SERVICE_NAME}
+    spec:
+      ports:
+        - name: ${SERVICE_NAME}
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        name: ${SERVICE_NAME}
+      type: ClusterIP
+
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: ${SERVICE_NAME}
+    spec:
+      to:
+        kind: Service
+        name: ${SERVICE_NAME}
+        weight: 100
+      port:
+        targetPort: ${SERVICE_NAME}
+      tls:
+        termination: edge
+      wildcardPolicy: None
+
+parameters:
+  - name: SERVICE_NAME
+    value: alert-hook
+
+  - name: IMAGE_TAG
+    value: '1.0.1'
+
+  - name: MEMORY_SIZE
+    value: '1Gi'
