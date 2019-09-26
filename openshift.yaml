@@ -27,6 +27,8 @@ objects:
                   value: 0.0.0.0
                 - name: HTTP_ENDPOINT_PORT
                   value: "8080"
+                - name: ALERTMANAGER_BALEMESSENGER_API_TOKEN
+                  value: ${ALERTMANAGER_BALEMESSENGER_API_TOKEN}
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -84,3 +86,6 @@ parameters:
 
   - name: MEMORY_SIZE
     value: '1Gi'
+
+  - name: ALERTMANAGER_BALEMESSENGER_API_TOKEN
+    value: "alerthook"
