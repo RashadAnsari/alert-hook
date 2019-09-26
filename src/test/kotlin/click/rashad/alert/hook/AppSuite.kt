@@ -1,6 +1,6 @@
 package click.rashad.alert.hook
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class AppSuite {
@@ -13,5 +13,4 @@ class AppSuite {
     fun printTest() {
         assertEquals("Hello, Alert Hook!", "Hello, Alert Hook!")
     }
-
 }

@@ -37,7 +37,6 @@ object KotlinConfig {
         } catch (ex: Exception) {
             ""
         }
-
     }
 
     private fun getLogbackPath(): String {
@@ -48,5 +47,4 @@ object KotlinConfig {
             ""
         }
     }
-
 }

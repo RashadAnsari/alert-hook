@@ -27,7 +27,14 @@ repositories {
     jcenter()
 }
 
+configurations {
+    ktlint
+}
+
 dependencies {
+    // ktlint
+    ktlint "com.pinterest:ktlint:0.34.2"
+
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
@@ -70,4 +77,20 @@ task dockerPush(dependsOn: distDocker) {
             commandLine 'sh', '-c', "docker push rashadansari/${project.name}:$version"
         }
     }
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
 }
