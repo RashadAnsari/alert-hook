@@ -57,6 +57,8 @@ fun Route.alertManager() {
                 }
             }
 
+            client.close()
+
             call.respond(HttpStatusCode.OK)
         }
     }
