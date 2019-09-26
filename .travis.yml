@@ -3,8 +3,8 @@ language: java
 jdk:
   - openjdk8
 
-# services:
-#   - docker
+services:
+  - docker
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -21,6 +21,6 @@ install:
 script:
   - ./gradlew check
 
-# after_success:
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#   - ./gradlew dockerPush
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - ./gradlew dockerPush

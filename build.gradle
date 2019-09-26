@@ -39,10 +39,16 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     // Ktor
-    compile("io.ktor:ktor-gson:$ktor_version")
-    // todo: update locations after stable api
-    compile("io.ktor:ktor-locations:$ktor_version")
+    compile "io.ktor:ktor-gson:$ktor_version"
+    
+    compile "io.ktor:ktor-server-core:$ktor_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"
+    
+    compile "io.ktor:ktor-client-core:$ktor_version"
+    compile "io.ktor:ktor-client-apache:$ktor_version"
+    
+    // todo: update locations after stable api
+    compile "io.ktor:ktor-locations:$ktor_version"
 
     // Logback
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'

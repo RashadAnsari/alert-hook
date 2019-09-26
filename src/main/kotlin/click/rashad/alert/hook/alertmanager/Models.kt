@@ -51,3 +51,5 @@ data class AlertManager(
 @KtorExperimentalLocationsAPI
 @Location("/api/v1/alertmanager/balemessenger/{token}")
 data class BaleMessenger(val token: String)
+
+data class BaleMessengerSendMessage(val chatId: Int, val text: String)
