@@ -7,7 +7,6 @@ services:
     environment:
       - HTTP_ENDPOINT_HOST=alert-hook
       - HTTP_ENDPOINT_PORT=8080
-      - ALERTMANAGER_BALEMESSENGER_API_TOKEN=alerthook
     ports:
       - 8080:8080
     volumes:
