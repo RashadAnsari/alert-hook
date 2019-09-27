@@ -6,7 +6,7 @@ Alert Hook is a tool for getting your alerts from alerting services and send the
 
 ## Supported Services
 
-* AlertManager -> BaleMessenger
+* **AlertManager** to **BaleMessenger**
 
     * API
 
