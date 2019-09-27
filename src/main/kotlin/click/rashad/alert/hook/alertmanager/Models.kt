@@ -52,4 +52,4 @@ data class AlertManager(
 @Location("/api/v1/alertmanager/balemessenger/{token}")
 data class BaleMessenger(val token: String)
 
-data class BaleMessengerSendMessage(val chatId: Int, val text: String)
+data class BaleMessengerSendMessage(val chatId: Long, val text: String)

@@ -24,7 +24,7 @@ fun Route.alertManager() {
     val baleMessengerBotToken =
         config.getString("alertmanager.balemessenger.bot-token")
     val baleMessengerChatId =
-        config.getInt("alertmanager.balemessenger.chat-id")
+        config.getLong("alertmanager.balemessenger.chat-id")
     val baleMessengerTemplate =
         config.getString("alertmanager.balemessenger.template")
 
