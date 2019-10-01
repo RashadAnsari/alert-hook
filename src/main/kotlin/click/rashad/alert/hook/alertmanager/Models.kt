@@ -20,11 +20,11 @@ data class AlertManagerAlert(
             .replace("{{generatorURL}}", generatorURL)
 
         labels.map {
-            result = result.replace("{{${it.key}}}", it.value)
+            result = result.replace("{{labels.${it.key}}}", it.value)
         }
 
         annotations.map {
-            result = result.replace("{{${it.key}}}", it.value)
+            result = result.replace("{{annotations.${it.key}}}", it.value)
         }
 
         return result.trimIndent()

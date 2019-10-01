@@ -27,8 +27,8 @@ Alert Hook is a tool for getting your alerts from alerting services and send the
                   *Status:* {{status}}
                   *Starts At:* {{startsAt}}
                   *Ends At:* {{endsAt}}
-                  *Generator URL:* {{generatorURL}}
-                  *Alert Name:* {{alertname}}
+                  *Alert Name:* {{labels.alertname}}
+                  *Severity:* {{annotations.severity}}
                 """
               }
             }
