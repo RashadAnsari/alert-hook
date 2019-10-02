@@ -52,11 +52,11 @@ Alert Hook is a tool for getting your alerts from alerting services and send the
                 chat-id: 12345
             
                 template: """
-                  Status: {{status}}
-                  Starts At: {{startsAt}}
-                  Ends At: {{endsAt}}
-                  Alert Name: {{labels.alertname}}
-                  Severity: {{annotations.severity}}
+                  **Status:** {{status}}
+                  **Starts At:** {{startsAt}}
+                  **Ends At:** {{endsAt}}
+                  **Alert Name:** {{labels.alertname}}
+                  **Severity:** {{annotations.severity}}
                 """
               }
             }
