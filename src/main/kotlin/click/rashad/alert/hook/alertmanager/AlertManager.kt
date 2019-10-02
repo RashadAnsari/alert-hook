@@ -4,15 +4,13 @@ import click.rashad.alert.hook.commons.ApiError
 import com.google.gson.Gson
 import com.typesafe.config.ConfigFactory
 import io.ktor.application.call
-import io.ktor.client.HttpClient
-import io.ktor.client.request.post
-import io.ktor.client.request.url
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import me.ivmg.telegram.bot
 import org.slf4j.LoggerFactory
 
 @KtorExperimentalLocationsAPI
@@ -29,7 +27,10 @@ fun Route.alertManager() {
     val baleMessengerTemplate =
         config.getString("alertmanager.balemessenger.template")
 
-    val baleBotUrl = "https://tapi.bale.ai/bot$baleMessengerBotToken/sendMessage"
+    val baleMessengerBot = bot {
+        token = baleMessengerBotToken
+        apiUrl = "https://tapi.bale.ai/bot"
+    }
 
     post<BaleMessenger> {
         if (it.token != baleMessengerApiToken) {
@@ -45,18 +46,9 @@ fun Route.alertManager() {
 
             val alerts = requestBody.toTemplateStringList(baleMessengerTemplate)
 
-            val client = HttpClient()
             alerts.map { alert ->
-                client.post<Unit> {
-                    url(baleBotUrl)
-                    body = Gson().toJson(BaleMessengerSendMessage(
-                        chatId = baleMessengerChatId,
-                        text = alert
-                    ))
-                }
+                baleMessengerBot.sendMessage(baleMessengerChatId, alert)
             }
-
-            client.close()
 
             call.respond(HttpStatusCode.OK)
         }
@@ -71,7 +63,9 @@ fun Route.alertManager() {
     val telegramMessengerTemplate =
         config.getString("alertmanager.telegrammessenger.template")
 
-    val telegramBotUrl = "https://api.telegram.org/bot$telegramMessengerBotToken/sendMessage"
+    val telegramMessengerBot = bot {
+        token = telegramMessengerBotToken
+    }
 
     post<TelegramMessenger> {
         if (it.token != telegramMessengerApiToken) {
@@ -87,18 +81,9 @@ fun Route.alertManager() {
 
             val alerts = requestBody.toTemplateStringList(telegramMessengerTemplate)
 
-            val client = HttpClient()
             alerts.map { alert ->
-                client.post<Unit> {
-                    url(telegramBotUrl)
-                    body = Gson().toJson(TelegramMessengerSendMessage(
-                        chat_id = telegramMessengerChatId,
-                        text = alert
-                    ))
-                }
+                telegramMessengerBot.sendMessage(telegramMessengerChatId, alert)
             }
-
-            client.close()
 
             call.respond(HttpStatusCode.OK)
         }

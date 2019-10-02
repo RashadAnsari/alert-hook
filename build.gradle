@@ -1,5 +1,5 @@
 group 'click.rashad'
-version '1.0.4'
+version '1.0.5'
 
 buildscript {
     ext.kotlin_version = '1.3.50'
@@ -25,6 +25,7 @@ mainClassName = "click.rashad.alert.hook.Application"
 
 repositories {
     jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 configurations {
@@ -49,6 +50,10 @@ dependencies {
     
     // todo: update locations after stable api
     compile "io.ktor:ktor-locations:$ktor_version"
+    compile "io.ktor:ktor-client-logging:$ktor_version"
+
+    // Kotlin Telegram Bot
+    compile "io.github.seik.kotlin-telegram-bot:telegram:4.4.0"
 
     // Logback
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'

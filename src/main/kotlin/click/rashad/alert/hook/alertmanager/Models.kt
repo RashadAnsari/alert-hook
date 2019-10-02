@@ -55,7 +55,3 @@ data class BaleMessenger(val token: String)
 @KtorExperimentalLocationsAPI
 @Location("/api/v1/alertmanager/telegrammessenger/{token}")
 data class TelegramMessenger(val token: String)
-
-data class BaleMessengerSendMessage(val chatId: Long, val text: String)
-
-data class TelegramMessengerSendMessage(val chat_id: Long, val text: String)
