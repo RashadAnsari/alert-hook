@@ -92,7 +92,7 @@ fun Route.alertManager() {
                 client.post<Unit> {
                     url(telegramBotUrl)
                     body = Gson().toJson(TelegramMessengerSendMessage(
-                        chatId = telegramMessengerChatId,
+                        chat_id = telegramMessengerChatId,
                         text = alert
                     ))
                 }
