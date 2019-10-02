@@ -46,7 +46,7 @@ Alert Hook is a tool for getting your alerts from alerting services and send the
 
         ```$xslt
             alertmanager {
-              balemessenger {
+              telegrammessenger {
                 api-token: "alerthook"
                 bot-token: "alerthook"
                 chat-id: 12345
