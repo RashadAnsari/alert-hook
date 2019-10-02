@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory
 @KtorExperimentalLocationsAPI
 fun Route.alertManager() {
     val config = ConfigFactory.load()
+    val log = LoggerFactory.getLogger(javaClass)
 
     val baleMessengerApiToken =
         config.getString("alertmanager.balemessenger.api-token")
@@ -29,8 +30,6 @@ fun Route.alertManager() {
         config.getString("alertmanager.balemessenger.template")
 
     val baleBotUrl = "https://tapi.bale.ai/bot$baleMessengerBotToken/sendMessage"
-
-    val log = LoggerFactory.getLogger(javaClass)
 
     post<BaleMessenger> {
         if (it.token != baleMessengerApiToken) {
@@ -52,6 +51,48 @@ fun Route.alertManager() {
                     url(baleBotUrl)
                     body = Gson().toJson(BaleMessengerSendMessage(
                         chatId = baleMessengerChatId,
+                        text = alert
+                    ))
+                }
+            }
+
+            client.close()
+
+            call.respond(HttpStatusCode.OK)
+        }
+    }
+
+    val telegramMessengerApiToken =
+        config.getString("alertmanager.telegrammessenger.api-token")
+    val telegramMessengerBotToken =
+        config.getString("alertmanager.telegrammessenger.bot-token")
+    val telegramMessengerChatId =
+        config.getLong("alertmanager.telegrammessenger.chat-id")
+    val telegramMessengerTemplate =
+        config.getString("alertmanager.telegrammessenger.template")
+
+    val telegramBotUrl = "https://api.telegram.org/bot$telegramMessengerBotToken/sendMessage"
+
+    post<TelegramMessenger> {
+        if (it.token != telegramMessengerApiToken) {
+            log.warn("Authentication failed for AlertManager and TelegramMessenger hook with token: {}", it.token)
+            val status = HttpStatusCode.Forbidden
+            call.respond(status, ApiError(status.value, status.description))
+        } else {
+            val requestBody = call.receive<AlertManager>()
+            log.info(
+                "Request received for AlertManager and TelegramMessenger hook with body: \n{}",
+                Gson().toJson(requestBody)
+            )
+
+            val alerts = requestBody.toTemplateStringList(telegramMessengerTemplate)
+
+            val client = HttpClient()
+            alerts.map { alert ->
+                client.post<Unit> {
+                    url(telegramBotUrl)
+                    body = Gson().toJson(TelegramMessengerSendMessage(
+                        chatId = telegramMessengerChatId,
                         text = alert
                     ))
                 }
