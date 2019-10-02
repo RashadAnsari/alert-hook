@@ -11,6 +11,7 @@ import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import me.ivmg.telegram.bot
+import me.ivmg.telegram.entities.ParseMode
 import org.slf4j.LoggerFactory
 
 @KtorExperimentalLocationsAPI
@@ -82,7 +83,7 @@ fun Route.alertManager() {
             val alerts = requestBody.toTemplateStringList(telegramMessengerTemplate)
 
             alerts.map { alert ->
-                telegramMessengerBot.sendMessage(telegramMessengerChatId, alert)
+                telegramMessengerBot.sendMessage(telegramMessengerChatId, alert, ParseMode.MARKDOWN)
             }
 
             call.respond(HttpStatusCode.OK)
