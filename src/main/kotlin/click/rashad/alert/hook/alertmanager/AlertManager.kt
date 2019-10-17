@@ -12,6 +12,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import me.ivmg.telegram.bot
 import me.ivmg.telegram.entities.ParseMode
+import okhttp3.logging.HttpLoggingInterceptor
 import org.slf4j.LoggerFactory
 
 @KtorExperimentalLocationsAPI
@@ -19,6 +20,8 @@ fun Route.alertManager() {
     val config = ConfigFactory.load()
     val log = LoggerFactory.getLogger(javaClass)
 
+    val baleMessengerBaseUrl =
+        config.getString("alertmanager.balemessenger.base-url")
     val baleMessengerApiToken =
         config.getString("alertmanager.balemessenger.api-token")
     val baleMessengerBotToken =
@@ -30,7 +33,8 @@ fun Route.alertManager() {
 
     val baleMessengerBot = bot {
         token = baleMessengerBotToken
-        apiUrl = "https://tapi.bale.ai/bot"
+        apiUrl = "$baleMessengerBaseUrl/bot"
+        logLevel = HttpLoggingInterceptor.Level.NONE
     }
 
     post<BaleMessenger> {
@@ -55,6 +59,8 @@ fun Route.alertManager() {
         }
     }
 
+    val telegramMessengerBaseUrl =
+        config.getString("alertmanager.telegrammessenger.base-url")
     val telegramMessengerApiToken =
         config.getString("alertmanager.telegrammessenger.api-token")
     val telegramMessengerBotToken =
@@ -66,6 +72,8 @@ fun Route.alertManager() {
 
     val telegramMessengerBot = bot {
         token = telegramMessengerBotToken
+        apiUrl = "$telegramMessengerBaseUrl/bot"
+        logLevel = HttpLoggingInterceptor.Level.NONE
     }
 
     post<TelegramMessenger> {

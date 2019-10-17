@@ -1,7 +1,7 @@
 version: "3"
 services:
   alert-hook:
-    image: rashadansari/alert-hook:1.0.1
+    image: rashadansari/alert-hook:1.0.7
     hostname: alert-hook
     container_name: alert-hook
     environment:
