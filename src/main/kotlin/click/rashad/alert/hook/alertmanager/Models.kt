@@ -55,3 +55,9 @@ data class BaleMessenger(val token: String)
 @KtorExperimentalLocationsAPI
 @Location("/api/v1/alertmanager/telegrammessenger/{token}")
 data class TelegramMessenger(val token: String)
+
+@KtorExperimentalLocationsAPI
+@Location("/api/v1/alertmanager/matrixmessenger/{token}")
+data class MatrixMessenger(val token: String)
+
+data class MatrixSendMessageRequest(val msgtype: String = "m.text", val body: String)

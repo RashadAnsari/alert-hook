@@ -10,6 +10,9 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.Charset
 import me.ivmg.telegram.bot
 import me.ivmg.telegram.entities.ParseMode
 import okhttp3.logging.HttpLoggingInterceptor
@@ -92,6 +95,51 @@ fun Route.alertManager() {
 
             alerts.map { alert ->
                 telegramMessengerBot.sendMessage(telegramMessengerChatId, alert, ParseMode.MARKDOWN)
+            }
+
+            call.respond(HttpStatusCode.OK)
+        }
+    }
+
+    val matrixBaseUrl =
+        config.getString("alertmanager.matrixmessenger.base-url")
+    val matrixRoomId =
+        config.getString("alertmanager.matrixmessenger.room-id")
+    val matrixAccessToken =
+        config.getString("alertmanager.matrixmessenger.access-token")
+    val matrixApiToken =
+        config.getString("alertmanager.matrixmessenger.api-token")
+    val matrixTemplate =
+        config.getString("alertmanager.matrixmessenger.template")
+
+    post<MatrixMessenger> {
+        if (it.token != matrixApiToken) {
+            log.warn("Authentication failed for AlertManager and MatrixMessenger hook with token: {}", it.token)
+            val status = HttpStatusCode.Forbidden
+            call.respond(status, ApiError(status.value, status.description))
+        } else {
+            val requestBody = call.receive<AlertManager>()
+            log.info(
+                "Request received for AlertManager and MatrixMessenger hook with body: \n{}",
+                Gson().toJson(requestBody)
+            )
+
+            val alerts = requestBody.toTemplateStringList(matrixTemplate)
+
+            val url = URL(
+                "$matrixBaseUrl/_matrix/client/r0/rooms/$matrixRoomId/send/m.room.message?access_token=$matrixAccessToken"
+            )
+
+            alerts.map { alert ->
+                val reqBody =
+                    Gson().toJson(MatrixSendMessageRequest(body = alert))
+                        .toByteArray(Charset.forName("UTF-8"))
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "POST"
+                connection.doOutput = true
+                connection.outputStream.write(reqBody)
+                val statusCode = connection.responseCode
+                log.info("get response code {} from matrix", statusCode)
             }
 
             call.respond(HttpStatusCode.OK)
